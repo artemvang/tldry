@@ -4,7 +4,7 @@ from tldry.nlp import TextCleaner
 from tldry.bm25 import BM25DistanceScorer
 
 
-DEFAULT_LANGUAGE = 'russian'
+DEFAULT_LANGUAGE = 'english'
 
 
 class TLDRy:
