@@ -1,0 +1,1 @@
+from .tldry import TLDRy

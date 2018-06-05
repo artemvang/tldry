@@ -1,0 +1,4 @@
+regex
+numpy
+PyStemmer
+pytest
