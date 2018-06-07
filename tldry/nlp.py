@@ -1,6 +1,7 @@
 import pkgutil
 import importlib
 import os.path as op
+from collections import defaultdict
 
 from Stemmer import Stemmer
 import regex as re
@@ -14,35 +15,34 @@ AVAILABLE_LANGUAGES = frozenset(
 
 
 class TextCleaner:
-    paragraph_re = re.compile(r'[.!?]*\n+')
-    word_regex = re.compile(r'[^\W_]+')
-    sent_regex = re.compile(r'(?<=[.!?]+)\s+')
+    word_regex = re.compile(r'[^\W\d_]+')
+    sent_regex = re.compile(r'(?<=(?:[\p{lower}\d]|[^\w])\s*[.!?\n]+)\s*(?=(?:[\p{upper}\d]|[^\w]))')
 
-    def __init__(self, language, min_token_len, min_sent_len):
+    def __init__(self, language, min_sent_len, min_df):
         if language not in AVAILABLE_LANGUAGES:
             err = (f"Language '{language}' is not available, "
                    f"choose from [{', '.join(AVAILABLE_LANGUAGES)}]")
             raise ValueError(err)
 
-        self.min_token_len = min_token_len
         self.min_sent_len = min_sent_len
+        self.min_df = min_df
 
         self.stem = Stemmer(language).stemWord
 
-        stopwords = importlib.import_module(
-            f'tldry.stopwords.{language}').stopwords
-        self.stopwords = frozenset(self.stem(s) for s in stopwords)
+        stopwords = importlib.import_module(f'tldry.stopwords.{language}')
+        self.stopwords = frozenset(stopwords.stopwords)
 
         self.raw_sentences = []
 
-    def fit_transform(self, text):
+    def transform(self, text):
         raw_sentences_ = self.sent_tokenize(text)
         clean_sentences_ = [self.clean_sentence(self.word_tokenize(sent))
-                           for sent in raw_sentences_]
+                            for sent in raw_sentences_]
+        filtered_clean_sentences_ = self.filter_by_min_df(clean_sentences_)
 
         raw_sentences = []
         clean_sentences = []
-        for c, r in zip(clean_sentences_, raw_sentences_):
+        for c, r in zip(filtered_clean_sentences_, raw_sentences_):
             if len(c) < self.min_sent_len:
                 continue
             clean_sentences.append(c)
@@ -50,10 +50,23 @@ class TextCleaner:
 
         self.raw_sentences = raw_sentences
 
-        return clean_sentences
+        ultra_stem_clean_sentences = self.ultra_stem_sentences(clean_sentences)
+
+        return ultra_stem_clean_sentences
+
+    def ultra_stem_sentences(self, clean_sentences):
+        return [[t[0] for t in sent] for sent in clean_sentences]
+
+    def filter_by_min_df(self, clean_sentences):
+        df = defaultdict(int)
+        for sent in clean_sentences:
+            for tok in set(sent):
+                df[tok] += 1
+
+        return [[tok for tok in sent if df[tok] >= self.min_df]
+                for sent in clean_sentences]
 
     def sent_tokenize(self, text):
-        text = self.paragraph_re.sub('. ', text)
         return self.sent_regex.split(text)
 
     def word_tokenize(self, sentence):
@@ -62,11 +75,9 @@ class TextCleaner:
     def clean_sentence(self, sentence):
         new_sentence = []
         for tok in sentence:
-            tok = self.stem(tok.lower())
-            if self.is_valid_token(tok):
-                new_sentence.append(tok)
+            tok = tok.lower()
+            if tok in self.stopwords:
+                continue
+            new_sentence.append(self.stem(tok))
 
         return new_sentence
-
-    def is_valid_token(self, token):
-        return token not in self.stopwords and len(token) >= self.min_token_len

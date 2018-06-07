@@ -10,11 +10,11 @@ requirements = [
 
 setup(
     name='tldry',
-    version='0.1.1',
+    version='0.2.0',
     author='Artem Vang',
     author_email='vangogius@gmail.com',
     url='https://github.com/vangaa/tldry',
-    description='Automatic text summarizer using BM25 and textrank',
+    description='Automatic text summarizer',
     license='MIT License',
     install_requires=requirements,
     packages=find_packages('.', exclude='tests'),
