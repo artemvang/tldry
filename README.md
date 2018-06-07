@@ -9,7 +9,7 @@ Lightweight and fast library for automatic summary extraction from russian and e
 ```bash
 pip install tldry
 ```
-or directly from reposiroty:
+or directly from repository:
 ```bash
 pip install git+https://github.com/vangaa/tldry
 ```
