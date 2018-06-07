@@ -7,16 +7,6 @@ from tldry.pdist_maker import PDistMaker
 DEFAULT_LANGUAGE = 'english'
 
 
-def get_distance(sent1, sent2):
-    rate = 0
-    for s1 in sent1:
-        for s2 in sent2:
-            rate += int(s1 == s2)
-    # common = len(set(sent1) & set(sent2))
-
-    norm = max(np.log(len(sent1) * len(sent2)), 1.)
-    return rate / norm
-
 
 class TLDRy:
     damping = 0.85

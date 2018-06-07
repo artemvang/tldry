@@ -3,7 +3,6 @@
 def test_russian_text(russian_tldr, russian_text):
     summary = russian_tldr.summarize(russian_text)
 
-    print(*summary, sep='\n$$$$\n')
     assert summary == [
         (
             'В 1964-м культуролог, искусствовед (и просто лучший человек '
@@ -30,6 +29,7 @@ def test_russian_text(russian_tldr, russian_text):
         ),
     ]
 
+
 def test_english_text(english_tldr, english_text):
     summary = english_tldr.summarize(english_text)
 
@@ -46,7 +46,7 @@ def test_english_text(english_tldr, english_text):
             'assume that the "cowboy hero" would be Julian, but it becomes '
             'apparent over the course of the film that he was most '
             'likely subtlety referring to Chang.'
-         ),
+        ),
         (
             'Its the films clashing of east and west which is interesting as '
             'we feel like we are watching a western fused with elements of '
