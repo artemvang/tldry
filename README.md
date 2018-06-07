@@ -1,6 +1,6 @@
 # TLDRy!
 
-[![PyPI version](https://badge.fury.io/py/p2tg.svg)](https://badge.fury.io/py/p2tg)
+[![PyPI version](https://badge.fury.io/py/tldry.svg)](https://badge.fury.io/py/tldry)
 
 Lightweight and fast library for automatic summary extraction from russian and english texts.
 
