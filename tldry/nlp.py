@@ -14,31 +14,29 @@ AVAILABLE_LANGUAGES = frozenset(
 
 
 class TextCleaner:
-    paragraph_re = re.compile(r'[.!?]*\n+')
-    word_regex = re.compile(r'[^\W_]+')
-    sent_regex = re.compile(r'(?<=[.!?]+)\s+')
+    word_regex = re.compile(r'[^\W\d_]+')
+    sent_regex = re.compile(r'(?<=(?:[\p{lower}\d]|[^\w])\s*[.!?\n]+)'
+                            r'\s*(?=(?:[\p{upper}\d]|[^\w]))')
 
-    def __init__(self, language, min_token_len, min_sent_len):
+    def __init__(self, language, min_sent_len):
         if language not in AVAILABLE_LANGUAGES:
             err = (f"Language '{language}' is not available, "
                    f"choose from [{', '.join(AVAILABLE_LANGUAGES)}]")
             raise ValueError(err)
 
-        self.min_token_len = min_token_len
         self.min_sent_len = min_sent_len
 
         self.stem = Stemmer(language).stemWord
 
-        stopwords = importlib.import_module(
-            f'tldry.stopwords.{language}').stopwords
-        self.stopwords = frozenset(self.stem(s) for s in stopwords)
+        stopwords = importlib.import_module(f'tldry.stopwords.{language}')
+        self.stopwords = frozenset(stopwords.stopwords)
 
         self.raw_sentences = []
 
     def fit_transform(self, text):
         raw_sentences_ = self.sent_tokenize(text)
         clean_sentences_ = [self.clean_sentence(self.word_tokenize(sent))
-                           for sent in raw_sentences_]
+                            for sent in raw_sentences_]
 
         raw_sentences = []
         clean_sentences = []
@@ -53,7 +51,6 @@ class TextCleaner:
         return clean_sentences
 
     def sent_tokenize(self, text):
-        text = self.paragraph_re.sub('. ', text)
         return self.sent_regex.split(text)
 
     def word_tokenize(self, sentence):
@@ -62,11 +59,9 @@ class TextCleaner:
     def clean_sentence(self, sentence):
         new_sentence = []
         for tok in sentence:
-            tok = self.stem(tok.lower())
-            if self.is_valid_token(tok):
-                new_sentence.append(tok)
+            tok = tok.lower()
+            if tok in self.stopwords or len(tok) == 1:
+                continue
+            new_sentence.append(self.stem(tok))
 
         return new_sentence
-
-    def is_valid_token(self, token):
-        return token not in self.stopwords and len(token) >= self.min_token_len
