@@ -13,6 +13,7 @@ class TLDRy:
 
     def __init__(self, language=DEFAULT_LANGUAGE,
                  min_sent_len=2, min_df=2):
+        self.language = language
         self.text_cleaner = TextCleaner(
             language=language,
             min_sent_len=min_sent_len,
