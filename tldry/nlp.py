@@ -51,7 +51,10 @@ class TextCleaner:
         return clean_sentences
 
     def sent_tokenize(self, text):
-        return self.sent_regex.split(text)
+        sentences = []
+        for line in text.splitlines():
+            sentences.extend(self.sent_regex.split(line))
+        return sentences
 
     def word_tokenize(self, sentence):
         return self.word_regex.findall(sentence)

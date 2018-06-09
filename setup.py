@@ -10,7 +10,7 @@ requirements = [
 
 setup(
     name='tldry',
-    version='0.2.1',
+    version='0.2.2',
     author='Artem Vang',
     author_email='vangogius@gmail.com',
     url='https://github.com/vangaa/tldry',
