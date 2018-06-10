@@ -38,13 +38,16 @@ class TextCleaner:
         clean_sentences_ = [self.clean_sentence(self.word_tokenize(sent))
                             for sent in raw_sentences_]
 
+        used_sentences = set()
         raw_sentences = []
         clean_sentences = []
         for c, r in zip(clean_sentences_, raw_sentences_):
-            if len(c) < self.min_sent_len:
+            c = tuple(c)
+            if len(c) < self.min_sent_len or c in used_sentences:
                 continue
             clean_sentences.append(c)
             raw_sentences.append(r)
+            used_sentences.add(c)
 
         self.raw_sentences = raw_sentences
 
