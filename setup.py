@@ -3,14 +3,14 @@ from setuptools import setup, find_packages
 
 
 requirements = [
-    'numpy>=1.14.3',
+    'numpy',
+    'regex',
     'PyStemmer==1.3.0',
-    'regex>=2018.2.21',
 ]
 
 setup(
     name='tldry',
-    version='0.2.7',
+    version='0.2.8',
     author='Artem Vang',
     author_email='vangogius@gmail.com',
     url='https://github.com/vangaa/tldry',
