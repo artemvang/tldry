@@ -29,7 +29,7 @@ class TextCleaner:
         self.stem = Stemmer(language).stemWord
 
         stopwords = importlib.import_module(f'tldry.stopwords.{language}')
-        self.stopwords = frozenset(stopwords.stopwords)
+        self.stopwords = frozenset(self.stem(w) for w in stopwords.stopwords)
 
         self.raw_sentences = []
 
@@ -66,9 +66,9 @@ class TextCleaner:
     def clean_sentence(self, sentence):
         new_sentence = []
         for tok in sentence:
-            tok = tok.lower()
-            if tok in self.stopwords or len(tok) == 1:
+            stem = self.stem(tok.lower())
+            if len(stem) <= 2 or stem in self.stopwords:
                 continue
-            new_sentence.append(self.stem(tok))
+            new_sentence.append(stem)
 
         return new_sentence
