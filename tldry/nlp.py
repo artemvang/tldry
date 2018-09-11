@@ -15,7 +15,7 @@ AVAILABLE_LANGUAGES = frozenset(
 
 class TextCleaner:
     word_regex = re.compile(r'[^\W\d_]+')
-    sent_regex = re.compile(r'(?<=(?:[\p{lower}\d]|[^\w])\s*[.!?\n]+)'
+    sent_regex = re.compile(r'(?<=(?:[\p{lower}\p{upper}\d]|[^\w])\s*[.!?\n]+)'
                             r'\s*(?=(?:[\p{upper}\d]|[^\w]))')
 
     def __init__(self, language, min_sent_len):
