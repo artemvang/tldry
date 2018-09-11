@@ -4,6 +4,7 @@
 
 Lightweight and fast library for automatic summary extraction from russian and english texts.
 
+You can try this library [here](http://t.me/@tldrrbot).
 # Installation
 
 ```bash
