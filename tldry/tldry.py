@@ -7,7 +7,6 @@ from tldry.pdist_maker import PDistMaker
 DEFAULT_LANGUAGE = 'english'
 
 
-
 class TLDRy:
     damping = 0.85
 
