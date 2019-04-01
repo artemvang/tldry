@@ -1,4 +1,5 @@
 regex
 numpy
+scipy
 PyStemmer
 pytest
