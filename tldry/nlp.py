@@ -1,9 +1,9 @@
+import regex as re
 import pkgutil
 import importlib
 import os.path as op
 
 from Stemmer import Stemmer
-import regex as re
 
 import tldry.stopwords as stopwords
 
@@ -57,6 +57,8 @@ class TextCleaner:
         sentences = []
         for line in text.splitlines():
             for sent in self.sent_regex.split(line.strip()):
+                if sent.endswith('?'):
+                    continue
                 sentences.append(sent)
         return sentences
 

@@ -1,6 +1,7 @@
 from collections import defaultdict
 
 import numpy as np
+from scipy.stats import boxcox
 
 
 class PDistMaker:
@@ -16,9 +17,10 @@ class PDistMaker:
         tf_matrix = np.zeros((corpus_size, len(self.vocabulary_)))
         for sent_id, kws in enumerate(corpus):
             for kw in kws:
-                kw_id = self.vocabulary_.get(kw)
-                if kw_id is not None:
-                    tf_matrix[sent_id, kw_id] += 1
+                kw_id_df = self.vocabulary_.get(kw)
+                if kw_id_df is not None:
+                    kw_id, df = kw_id_df
+                    tf_matrix[sent_id, kw_id] += df
 
         return tf_matrix
 
@@ -28,17 +30,15 @@ class PDistMaker:
 
     def transform(self, corpus):
         tf_matrix = self.transform_tf(corpus)
-        sent_sizes = np.asarray([len(sent) for sent in corpus])[:, None]
 
-        sizes_matrix = np.log(sent_sizes.dot(sent_sizes.T))
-        sizes_matrix[sizes_matrix == 0] = 1
+        tf_matrix[np.sum(tf_matrix, axis=1) == 0] = 1e-8
+        tf_matrix /= np.linalg.norm(tf_matrix, axis=1, keepdims=True)
 
-        distance_matrix = np.inner(tf_matrix, tf_matrix)
+        distance_matrix = (tf_matrix.dot(tf_matrix.T) + 1) / 2
 
-        return distance_matrix / sizes_matrix
+        return distance_matrix
 
     def fit(self, corpus):
-        corpus_size = len(corpus)
         self.vocabulary_ = {}
 
         keywords_df = defaultdict(int)
@@ -51,6 +51,12 @@ class PDistMaker:
                  if df >= self.min_df]
 
         for kw_id, (kw, df) in enumerate(kw2df):
-            self.vocabulary_[kw] = kw_id
+            self.vocabulary_[kw] = [kw_id, len(corpus) / df]
+
+        vals = [s for _, s in self.vocabulary_.values()]
+        _, lamb = boxcox(vals)
+
+        for key, val in zip(self.vocabulary_, boxcox(vals, lamb)):
+            self.vocabulary_[key][1] = val
 
         return self

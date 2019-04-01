@@ -22,7 +22,7 @@ class TLDRy:
         )
 
     def summarize(self, text, topn=5, with_scores=False,
-                  sort_by_position=True):
+                  sort_by_position=False):
         clean_text = self.text_cleaner.fit_transform(text)
         raw_sentences = self.text_cleaner.raw_sentences
 
@@ -30,10 +30,8 @@ class TLDRy:
             return []
 
         distance_matrix = self.dist_matrix_maker.fit_transform(clean_text)
-        fitted_distance_matrix = self.preprocess_distance_matrix(
-            distance_matrix)
 
-        sentence_scores = self.textrank(fitted_distance_matrix)
+        sentence_scores = self.textrank(distance_matrix)
 
         argsorted_ids = np.argsort(sentence_scores)[-topn:][::-1]
         if sort_by_position:
@@ -47,28 +45,25 @@ class TLDRy:
 
         return topn_sentences
 
-    def preprocess_distance_matrix(self, distance_matrix):
-        sums = distance_matrix.sum(axis=1)
-        sums[sums == 0] = 1
-        distance_matrix /= sums[:, None]
+    def textrank(self, matrix):
 
-        return distance_matrix
+        dangling_nodes = np.where(matrix.sum(axis=1) == 0)[0]
 
-    def textrank(self, distance_matrix):
-        sentences_count = len(distance_matrix)
+        p = np.repeat(1 / len(matrix), len(matrix))
 
-        basic_probability_matrix = ((1 - self.damping) *
-                                    np.ones_like(distance_matrix) /
-                                    sentences_count)
-        matrix = self.damping * distance_matrix.T
-        matrix += basic_probability_matrix
+        for node in dangling_nodes:
+            matrix[node] = p
 
-        eig_vector = np.ones((sentences_count, )) / sentences_count
-        error_val = 1.0
+        matrix /= matrix.sum(axis=1)
 
-        while error_val > 1e-4:
-            next_eig = np.dot(matrix, eig_vector)
-            error_val = np.linalg.norm(next_eig - eig_vector)
-            eig_vector = next_eig
+        matrix = (
+            self.damping * matrix +
+            (1 - self.damping) * np.outer(np.ones(len(matrix)), p)
+        )
 
-        return eig_vector
+        eigenvalues, eigenvectors = np.linalg.eigh(matrix.T)
+        ind = eigenvalues.argmax()
+        largest = np.array(eigenvectors[:, ind]).flatten().real
+        norm = largest.sum()
+
+        return largest / norm

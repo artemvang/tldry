@@ -4,26 +4,12 @@ def test_russian_text(russian_tldr, russian_text):
     summary = russian_tldr.summarize(russian_text)
 
     assert summary == [
-        (
-            'Это не четкий термин, но некий тип чувствительности, крикливой '
-            'эстетичности, порой предельно серьезной, иногда ироничной, а '
-            'зачастую и вовсе отвергающей явную иронию.'),
-        (
-            'Без пяти минут античная трагедия едва сходится с маньеристским '
-            'боевиком, в котором полтора часа красивые (и не очень) люди по '
-            'инерции мстят друг другу, освещенные неоновыми лампами и '
-            'красными светильниками.'),
-        (
-            'Предельная серьезность интонации избавляет фильм от морали.'
-        ),
-        (
-            'Каждый кадр настолько вылизан, выставлен с четкими цветовыми '
-            'акцентами, что красота становится абсолютом, '
-            'перманентным состоянием.'),
-        (
-            'Кэмп избавляет боевик про месть от морали, от самой возможности '
-            'вынесения оценочных суждений.'
-        ),
+        'Но само это обозначение могло появиться только в постмодернистскую эпоху.',
+        'К нему можно причислить «Лебединое Озеро» Чайковского, почтовые открытки, некоторые оперы Вагнера, Голливуд 50-х.',
+        'Один из самых переоцененных и недооцененных режиссеров современности, о котором говорят все, но мало кто всерьёз.',
+        'Не для пущего смысла, а исключительно из эстетических соображений.',
+        'Смех без смеха.',
+
     ]
 
 
@@ -31,37 +17,9 @@ def test_english_text(english_tldr, english_text):
     summary = english_tldr.summarize(english_text)
 
     assert summary == [
-        (
-            'The film blends genre\'s in fairly interesting ways, as this '
-            'film is essentially a western masquerading as a '
-            'eastern neo noir crime film.'
-        ),
-        (
-            'The director also said this about the film, "From the beginning, '
-            'I had the idea of a thriller produced as a western, all in the '
-            'Far East, and with a modern cowboy hero." Many people would '
-            'assume that the "cowboy hero" would be Julian, but it becomes '
-            'apparent over the course of the film that he was most '
-            'likely subtlety referring to Chang.'
-        ),
-        (
-            'Its the films clashing of east and west which is interesting as '
-            'we feel like we are watching a western fused with elements of '
-            'samurai films, though the film takes more of its cues from '
-            'Sergio Leonne rather than Akira Kurosawa.'
-        ),
-        (
-            'This is a visual cue which evokes imagery of the fist fight '
-            'with Chang later on in the film, in which Julian in knocked '
-            'to the ground with Chang standing behind him, with his fists '
-            'raised in the same position as the statue.'
-        ),
-        (
-            'He fights Chang about of frustration, realising Chang is '
-            'possibly God and he is angry at God because he feels he has '
-            'been created to be the way he is rather than accepting that his '
-            'mother is the source of his problems and is the one who '
-            'manipulated him and his brother into getting into '
-            'crime in the first place.'
-        ),
+        'The films story is told primarily though visuals and music, with very sparse Dialogue, so the music at times acts as the voice of the situation, helping us paint a much larger more epic picture of what’s going on.'
+        'The sense of surreal mysticism that the neon drenched streets of Bangkok at night creates is almost dream like, and covers the screen in a hellish red and orange glow with slight variations with other bright colours, a thematic artistic choice that makes the Bangkok setting look like hell has corrupted the earth.'
+        'The cast is lead by Ryan Gosling, who despite top billing, is actually very underplayed and the film is essentially about his redemption at the hands of Chang, the Thai police Lieutenant played by relative newcomer Vithaya Pansringarm.'
+        'He also appears to show a level of all knowing abilities, as he senses the incoming danger of a gun fight before it even occurs, and at one point demonstrates his talent for vanishing completely after turning a corner while he is being followed.'
+        'He home is surrounded by nature, which gives off the idea of heaven, or paradise, and that Chang (God) is residing in a place of peace and purity, while the inhabitants of the corrupt seedy Bangkok are condemned to rainy, smoggy, moody looking areas with the hellish red and orange lights bearing down.'
     ]
