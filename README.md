@@ -10,7 +10,7 @@ You can try this library [here](http://t.me/@tldrrbot).
 ```bash
 pip install tldry
 ```
-or directly from repository:
+or from repository:
 ```bash
 pip install git+https://github.com/vangaa/tldry
 ```
